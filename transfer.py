@@ -137,6 +137,6 @@ if __name__ == "__main__":
 # Usage examples:
 # 
 # Basic transfer:
-# /Applications/Blender.app/Contents/MacOS/Blender --python ./main.py -- \
+# /Applications/Blender.app/Contents/MacOS/Blender --python ./transfer.py -- \
 #   --fbx_file ./model/human_model.fbx \
 #   --bvh_file ./motion/Walking.bvh
