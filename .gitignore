@@ -212,6 +212,3 @@ logs/
 
 # macOS
 .DS_Store
-
-# Scripting
-transfer.sh
