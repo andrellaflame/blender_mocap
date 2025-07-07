@@ -16,8 +16,3 @@ if [ -n "$BVH_PATH" ]; then
 else
   "$BLENDER" --background --python "$SCRIPT_PATH" -- "$FBX_PATH"
 fi
-
-
-# Usage
-#
-# From root directory: ./scripts/fbx2bvh.sh 'path_to_fbx_motion_capture'

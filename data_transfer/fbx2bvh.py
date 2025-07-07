@@ -67,3 +67,7 @@ scene_utils.clear_scene()
 print(f"Processing FBX file: {fbx_path}")
 fbx2bvh(fbx_path, bvh_path)
 print("Done.")
+
+# Usage examples:
+# 
+# ./data_transfer/fbx2bvh.sh 'path_to_fbx_motion_capture' 'path_to_bvh_save_file'
