@@ -2,6 +2,12 @@ import os
 import sys
 import bpy
 
+script_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.dirname(script_dir)
+sys.path.insert(0, project_root)
+
+from utils import scene_utils
+
 argv = sys.argv
 if "--" in argv:
     argv = argv[argv.index("--") + 1:]
@@ -55,11 +61,8 @@ def fbx2bvh(sourcepath, bvh_output_path):
     bpy.data.actions.remove(bpy.data.actions[-1])
     print(f"Exported BVH to: {bvh_output_path}")
 
-try:
-    import data_transfer
-    data_transfer.clear_scene()
-except ImportError as e:
-    print(f"Scene clear skipped or failed: {e}")
+# Clear existing scene
+scene_utils.clear_scene()
 
 print(f"Processing FBX file: {fbx_path}")
 fbx2bvh(fbx_path, bvh_path)
