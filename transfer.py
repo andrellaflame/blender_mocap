@@ -85,20 +85,39 @@ def adapt_weight(source_weight, source_label, source_arm, dest_arm):
         weight[:, idx] += source_weight[:, j]
 
     return weight
+
+def make_animation_looped(armature_obj):
+    """
+    Make the animation loop indefinitely by adding a Cycles modifier
+    """
+    if not armature_obj.animation_data or not armature_obj.animation_data.action:
+        print("No animation data found on armature")
+        return
+    
     action = armature_obj.animation_data.action
     first_frame = int(action.frame_range[0])
     last_frame = int(action.frame_range[1])
+    original_duration = last_frame - first_frame + 1
+    
+    print(f"Original animation: frames {first_frame} to {last_frame} ({original_duration} frames)")
+    
+    # Add Cycles modifier to each F-curve to make it loop infinitely
     for fcurve in action.fcurves:
-        first_value = fcurve.evaluate(first_frame)
-        last_value = fcurve.evaluate(last_frame)
-
-        # Insert keyframe on last frame to match the first
-        fcurve.keyframe_points.insert(frame=last_frame + 1, value=first_value, options={'FAST'})
+        # Check if Cycles modifier already exists
+        has_cycles = any(mod.type == 'CYCLES' for mod in fcurve.modifiers)
+        
+        if not has_cycles:
+            cycles_mod = fcurve.modifiers.new(type='CYCLES')
+            cycles_mod.mode_after = 'REPEAT'
+            cycles_mod.mode_before = 'REPEAT'
+    
+    print("Animation set to loop indefinitely using Cycles modifiers")
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--fbx_file', type=str, required=True, help='path of skinned model fbx file')
     parser.add_argument('--bvh_file', type=str, required=True, help='path of animation bvh file')
+    parser.add_argument('--looped', action='store_true', help='make animation loop indefinitely')
 
     if "--" not in sys.argv:
         argv = []
@@ -128,15 +147,24 @@ def main():
         set_modifier(mesh, dest_arm)
         bpy.context.view_layer.update()
 
-
     source_arm.hide_viewport = True
+    
+    # Apply animation looping if requested
+    if args.looped:
+        make_animation_looped(dest_arm)
 
 if __name__ == "__main__":
     main()
 
 # Usage examples:
 # 
-# Basic transfer:
+# Basic transfer (original animation):
 # /Applications/Blender.app/Contents/MacOS/Blender --python ./transfer.py -- \
 #   --fbx_file ./model/human_model.fbx \
-#   --bvh_file ./motion/Walking.bvh
+#   --bvh_file ./motion/Bicycle_Crunch.bvh
+#
+# Transfer with looped animation:
+# /Applications/Blender.app/Contents/MacOS/Blender --python ./transfer.py -- \
+#   --fbx_file ./model/human_model.fbx \
+#   --bvh_file ./motion/Bicycle_Crunch.bvh \
+#   --looped

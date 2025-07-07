@@ -56,8 +56,8 @@ def fbx2bvh(sourcepath, bvh_output_path):
     print(f"Exported BVH to: {bvh_output_path}")
 
 try:
-    import scene_utils
-    scene_utils.clear_scene()
+    import data_transfer
+    data_transfer.clear_scene()
 except ImportError as e:
     print(f"Scene clear skipped or failed: {e}")
 
